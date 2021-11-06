@@ -479,7 +479,7 @@ class Window(pyglet.window.Window):
         # This is an offset value so stuff like speed potions can also be easily added
         self.fov_offset = 0
 
-        self.collision_types = {"top": False, "bottom": False, "right": False, "left": False}
+        self.collision_types = {'top': False, 'bottom': False, 'right': False, 'left': False}
 
         # Strafing is moving lateral to the direction you are facing,
         # e.g. moving to the left or right while continuing to face forward.
@@ -701,7 +701,7 @@ class Window(pyglet.window.Window):
         pad = 0.25
         p = list(position)
         np = normalize(position)
-        self.collision_types = {"top": False, "bottom": False, "right": False, "left": False}
+        self.collision_types = {'top': False, 'bottom': False, 'right': False, 'left': False}
         for face in FACES:  # check all surrounding blocks
             for i in xrange(3):  # check each dimension independently
                 if not face[i]:
@@ -714,16 +714,16 @@ class Window(pyglet.window.Window):
                     op = list(np)
                     op[1] -= dy
                     op[i] += face[i]
-                    if tuple(op) not in self.model.world:
+                    if tuple(op) not in self.model.world or self.model.world.get(tuple(op)) == WATER:
                         continue
                     p[i] -= (d - pad) * face[i]
                     # If you are colliding with the ground or ceiling, stop
                     # falling / rising.
                     if face == (0, -1, 0):
-                        self.collision_types["top"] = True
+                        self.collision_types['top'] = True
                         self.dy = 0
                     if face == (0, 1, 0):
-                        self.collision_types["bottom"] = True
+                        self.collision_types['bottom'] = True
                         self.dy = 0
                     break
         return tuple(p)
@@ -754,8 +754,8 @@ class Window(pyglet.window.Window):
                 if previous:
                     self.model.add_block(previous, self.block)
             elif button == pyglet.window.mouse.LEFT and block:
-                texture = self.model.world[block]
-                if texture != STONE:
+                _, y, _ = block
+                if y > 1:
                     self.model.remove_block(block)
         else:
             self.set_exclusive_mouse(True)
