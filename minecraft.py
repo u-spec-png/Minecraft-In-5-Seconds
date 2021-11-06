@@ -170,17 +170,13 @@ class Model(object):
         """ Initialize the world by placing all the blocks.
 
         """
-        gen = NoiseGen(452692)
+        gen = NoiseGen(random.randrange(-2147483647, 2147483647))
 
         n = 128  # size of the world
         s = 1  # step size
-        y = 0  # initial y height
 
         # too lazy to do this properly lol
-        heightMap = []
-        for x in xrange(0, n, s):
-            for z in xrange(0, n, s):
-                heightMap.append(0)
+        heightMap = [0] * (n ** 2 // s)
         for x in xrange(0, n, s):
             for z in xrange(0, n, s):
                 heightMap[z + x * n] = int(gen.getHeight(x, z))
@@ -212,6 +208,10 @@ class Model(object):
                             for lx in xrange(x + -2, x + 3):
                                 for ly in xrange(3):
                                     self.add_block((lx, leafh + ly, lz), LEAF, immediate=False)
+                        for gx in [-1, 1]:
+                            self.add_block((x + gx, leafh + 3, z), LEAF, immediate=False)
+                            for gz in [-1, 0, 1]:
+                                self.add_block((x, leafh + 3, z + gz), LEAF, immediate=False)
 
     def hit_test(self, position, vector, max_distance=8):
         """ Line of sight search from current position. If a block is
