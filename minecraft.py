@@ -117,8 +117,7 @@ def normalize(position):
 
     """
     x, y, z = position
-    x, y, z = (int(round(x)), int(round(y)), int(round(z)))
-    return x, y, z
+    return int(round(x)), int(round(y)), int(round(z))
 
 
 def sectorize(position):
@@ -596,7 +595,7 @@ class Window(pyglet.window.Window):
             dy = 0.0
             dx = 0.0
             dz = 0.0
-        return (dx, dy, dz)
+        return dx, dy, dz
 
     def update(self, dt):
         """ This method is scheduled to be called repeatedly by the pyglet
@@ -855,7 +854,7 @@ class Window(pyglet.window.Window):
         """
         # label
         self.label.y = height - 10
-        # reticle
+        # reticule
         if self.reticle:
             self.reticle.delete()
         x, y = self.width // 2, self.height // 2
