@@ -26,7 +26,7 @@ SPRINT_SPEED = 7
 SPRINT_FOV = SPRINT_SPEED / 2
 
 GRAVITY = 20.0
-MAX_JUMP_HEIGHT = 1.0 # About the height of a block.
+MAX_JUMP_HEIGHT = 1.0  # About the height of a block.
 # To derive the formula for calculating jump speed, first solve
 #    v_t = v_0 + a * t
 # for the time at which you achieve maximum height, where a is the acceleration
@@ -44,17 +44,18 @@ PLAYER_FOV = 80.0
 if sys.version_info[0] >= 3:
     xrange = range
 
+
 def cube_vertices(x, y, z, n):
     """ Return the vertices of the cube at position x, y, z with size 2*n.
 
     """
     return [
-        x-n,y+n,z-n, x-n,y+n,z+n, x+n,y+n,z+n, x+n,y+n,z-n,  # top
-        x-n,y-n,z-n, x+n,y-n,z-n, x+n,y-n,z+n, x-n,y-n,z+n,  # bottom
-        x-n,y-n,z-n, x-n,y-n,z+n, x-n,y+n,z+n, x-n,y+n,z-n,  # left
-        x+n,y-n,z+n, x+n,y-n,z-n, x+n,y+n,z-n, x+n,y+n,z+n,  # right
-        x-n,y-n,z+n, x+n,y-n,z+n, x+n,y+n,z+n, x-n,y+n,z+n,  # front
-        x+n,y-n,z-n, x-n,y-n,z-n, x-n,y+n,z-n, x+n,y+n,z-n,  # back
+        x - n, y + n, z - n, x - n, y + n, z + n, x + n, y + n, z + n, x + n, y + n, z - n,  # top
+        x - n, y - n, z - n, x + n, y - n, z - n, x + n, y - n, z + n, x - n, y - n, z + n,  # bottom
+        x - n, y - n, z - n, x - n, y - n, z + n, x - n, y + n, z + n, x - n, y + n, z - n,  # left
+        x + n, y - n, z + n, x + n, y - n, z - n, x + n, y + n, z - n, x + n, y + n, z + n,  # right
+        x - n, y - n, z + n, x + n, y - n, z + n, x + n, y + n, z + n, x - n, y + n, z + n,  # front
+        x + n, y - n, z - n, x - n, y - n, z - n, x - n, y + n, z - n, x + n, y + n, z - n,  # back
     ]
 
 
@@ -93,12 +94,12 @@ LEAF = tex_coords((3, 0), (3, 0), (3, 0))
 WATER = tex_coords((0, 2), (0, 2), (0, 2))
 
 FACES = [
-    ( 0, 1, 0),
-    ( 0,-1, 0),
+    (0, 1, 0),
+    (0, -1, 0),
     (-1, 0, 0),
-    ( 1, 0, 0),
-    ( 0, 0, 1),
-    ( 0, 0,-1),
+    (1, 0, 0),
+    (0, 0, 1),
+    (0, 0, -1),
 ]
 
 
@@ -117,7 +118,7 @@ def normalize(position):
     """
     x, y, z = position
     x, y, z = (int(round(x)), int(round(y)), int(round(z)))
-    return (x, y, z)
+    return x, y, z
 
 
 def sectorize(position):
@@ -134,7 +135,7 @@ def sectorize(position):
     """
     x, y, z = normalize(position)
     x, y, z = x // SECTOR_SIZE, y // SECTOR_SIZE, z // SECTOR_SIZE
-    return (x, 0, z)
+    return x, 0, z
 
 
 class Model(object):
@@ -172,11 +173,11 @@ class Model(object):
         """
         gen = NoiseGen(452692)
 
-        n = 128 #size of the world
+        n = 128  # size of the world
         s = 1  # step size
         y = 0  # initial y height
-        
-        #too lazy to do this properly lol
+
+        # too lazy to do this properly lol
         heightMap = []
         for x in xrange(0, n, s):
             for z in xrange(0, n, s):
@@ -185,31 +186,31 @@ class Model(object):
             for z in xrange(0, n, s):
                 heightMap[z + x * n] = int(gen.getHeight(x, z))
 
-        #Generate the world
+        # Generate the world
         for x in xrange(0, n, s):
             for z in xrange(0, n, s):
                 h = heightMap[z + x * n]
-                if (h < 15):
+                if h < 15:
                     self.add_block((x, h, z), SAND, immediate=False)
-                    for y in range (h, 15):
+                    for y in range(h, 15):
                         self.add_block((x, y, z), WATER, immediate=False)
                     continue
-                if (h < 18):
+                if h < 18:
                     self.add_block((x, h, z), SAND, immediate=False)
                 self.add_block((x, h, z), GRASS, immediate=False)
                 for y in xrange(h - 1, 0, -1):
                     self.add_block((x, y, z), STONE, immediate=False)
-                #Maybe add tree at this (x, z)
-                if (h > 20):
+                # Maybe add tree at this (x, z)
+                if h > 20:
                     if random.randrange(0, 1000) > 990:
                         treeHeight = random.randrange(5, 7)
-                        #Tree trunk
+                        # Tree trunk
                         for y in xrange(h + 1, h + treeHeight):
                             self.add_block((x, y, z), WOOD, immediate=False)
-                        #Tree leaves
+                        # Tree leaves
                         leafh = h + treeHeight
                         for lz in xrange(z + -2, z + 3):
-                            for lx in xrange(x + -2, x + 3): 
+                            for lx in xrange(x + -2, x + 3):
                                 for ly in xrange(3):
                                     self.add_block((lx, leafh + ly, lz), LEAF, immediate=False)
 
@@ -348,8 +349,8 @@ class Model(object):
         # create vertex list
         # FIXME Maybe `add_indexed()` should be used instead
         self._shown[position] = self.batch.add(24, GL_QUADS, self.group,
-            ('v3f/static', vertex_data),
-            ('t2f/static', texture_data))
+                                               ('v3f/static', vertex_data),
+                                               ('t2f/static', texture_data))
 
     def hide_block(self, position, immediate=True):
         """ Hide the block at the given `position`. Hiding does not remove the
@@ -526,8 +527,8 @@ class Window(pyglet.window.Window):
 
         # The label that is displayed in the top left of the canvas.
         self.label = pyglet.text.Label('', font_name='Arial', font_size=18,
-            x=10, y=self.height - 10, anchor_x='left', anchor_y='top',
-            color=(0, 0, 0, 255))
+                                       x=10, y=self.height - 10, anchor_x='left', anchor_y='top',
+                                       color=(0, 0, 0, 255))
 
         # This call schedules the `update()` method to be called
         # TICKS_PER_SEC. This is the main game event loop.
@@ -556,7 +557,7 @@ class Window(pyglet.window.Window):
         dy = math.sin(math.radians(y))
         dx = math.cos(math.radians(x - 90)) * m
         dz = math.sin(math.radians(x - 90)) * m
-        return (dx, dy, dz)
+        return dx, dy, dz
 
     def get_motion_vector(self):
         """ Returns the current motion vector indicating the velocity of the
@@ -649,7 +650,7 @@ class Window(pyglet.window.Window):
         if self.jumped:
             speed += 0.7
 
-        d = dt * speed # distance covered this tick.
+        d = dt * speed  # distance covered this tick.
         dx, dy, dz = self.get_motion_vector()
         # New position in space, before accounting for gravity.
         dx, dy, dz = dx * d, dy * d, dz * d
@@ -669,7 +670,7 @@ class Window(pyglet.window.Window):
 
         # Sptinting stuff. If the player stops moving in the x and z direction, the player stops sprinting
         # and the sprint fov is subtracted from the fov offset
-        if old_pos[0]-self.position[0] == 0 and old_pos[2]-self.position[2] == 0:
+        if old_pos[0] - self.position[0] == 0 and old_pos[2] - self.position[2] == 0:
             disablefov = False
             if self.sprinting:
                 disablefov = True
@@ -701,7 +702,7 @@ class Window(pyglet.window.Window):
         pad = 0.25
         p = list(position)
         np = normalize(position)
-        self.collision_types = {"top":False,"bottom":False,"right":False,"left":False}
+        self.collision_types = {"top": False, "bottom": False, "right": False, "left": False}
         for face in FACES:  # check all surrounding blocks
             for i in xrange(3):  # check each dimension independently
                 if not face[i]:
@@ -859,9 +860,7 @@ class Window(pyglet.window.Window):
             self.reticle.delete()
         x, y = self.width // 2, self.height // 2
         n = 10
-        self.reticle = pyglet.graphics.vertex_list(4,
-            ('v2i', (x - n, y, x + n, y, x, y - n, x, y + n))
-        )
+        self.reticle = pyglet.graphics.vertex_list(4, ('v2i', (x - n, y, x + n, y, x, y - n, x, y + n)))
 
     def set_2d(self):
         """ Configure OpenGL to draw in 2d.
@@ -895,7 +894,7 @@ class Window(pyglet.window.Window):
         glRotatef(-y, math.cos(math.radians(x)), 0, math.sin(math.radians(x)))
         x, y, z = self.position
         if self.crouch:
-            glTranslatef(-x, -y+0.2, -z)
+            glTranslatef(-x, -y + 0.2, -z)
         else:
             glTranslatef(-x, -y, -z)
 
@@ -989,5 +988,6 @@ def main():
     window.set_exclusive_mouse(True)
     setup()
     pyglet.app.run()
+
 
 main()
