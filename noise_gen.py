@@ -34,7 +34,6 @@ class NoiseGen:
         floorX = float(int(x))
         floorZ = float(int(z))
 
-
         s = self._getNoise(floorX, floorZ)
         t = self._getNoise(floorX + 1, floorZ)
         u = self._getNoise(floorX, floorZ + 1)
